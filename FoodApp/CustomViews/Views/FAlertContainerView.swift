@@ -20,7 +20,6 @@ class FAlertContainerView: UIView {
     
     func configure() {
         translatesAutoresizingMaskIntoConstraints = false
-        
         layer.cornerRadius = 16
         layer.borderWidth = 2
         layer.borderColor = UIColor.white.cgColor

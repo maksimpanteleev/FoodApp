@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Result: Decodable {
+struct SearchResult: Decodable {
     
     let results: [Recipe]
     let offset: Int

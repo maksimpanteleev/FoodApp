@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20B29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="RecipeInfoCD" representedClassName=".RecipeInfoCD" syncable="YES">
+        <attribute name="id" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" attributeType="String"/>
+        <attribute name="readyInMinutes" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sourceUrl" attributeType="String"/>
+        <attribute name="summary" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="UserCD" inverseName="recipe" inverseEntity="UserCD"/>
+    </entity>
+    <entity name="UserCD" representedClassName=".UserCD" syncable="YES">
+        <attribute name="uid" attributeType="String"/>
+        <relationship name="recipe" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RecipeInfoCD" inverseName="user" inverseEntity="RecipeInfoCD"/>
+    </entity>
+    <elements>
+        <element name="RecipeInfoCD" positionX="-397.94140625" positionY="18.4921875" width="128" height="134"/>
+        <element name="UserCD" positionX="-54" positionY="36" width="128" height="59"/>
+    </elements>
+</model>

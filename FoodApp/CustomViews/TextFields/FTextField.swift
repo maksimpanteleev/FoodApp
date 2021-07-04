@@ -18,11 +18,10 @@ class FTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(placeholder: String, isSecure: Bool) {
-        super.init(frame: .zero)
+    convenience init(placeholder: String, isSecure: Bool) {
+        self.init(frame: .zero)
         self.placeholder = placeholder
         isSecureTextEntry = isSecure
-        configure()
     }
     
     func configure() {

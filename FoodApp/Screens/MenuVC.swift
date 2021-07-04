@@ -10,16 +10,19 @@ import UIKit
 protocol MenuVCDelegate: AnyObject {
     func searchButtonItemTapped()
     func favoritesButtonItemTapped()
+    func profileButtonItemTapped()
 }
 
 enum Menu: Int {
     
+    case profile
     case search
     case favorites
     case signOut
     
     var description: String {
         switch self {
+        case .profile: return "User's profile"
         case .search: return "Search for a recipe"
         case .favorites: return "Favorite meals"
         case .signOut: return "Sign out"
@@ -34,8 +37,6 @@ class MenuVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        print("menu")
         configureTableView()
     }
     
@@ -55,7 +56,7 @@ class MenuVC: UIViewController {
 
 extension MenuVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,12 +71,20 @@ extension MenuVC: UITableViewDelegate {
         guard let menuItem = Menu(rawValue: indexPath.row), let delegate = delegate else { return }
         
         switch menuItem {
+        case .profile:
+            delegate.profileButtonItemTapped()
         case .search:
             delegate.searchButtonItemTapped()
         case .favorites:
             delegate.favoritesButtonItemTapped()
         case .signOut:
-            dismiss(animated: true, completion: nil)
+            AuthenticationManager.updateUsersStatus(login: "", password: "", actionType: .singOut) { error in
+                guard error == nil else {
+                    self.presentAlertVC(title: "Error", message: AuthenticationManager.firebaseError!)
+                    return
+                }
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }

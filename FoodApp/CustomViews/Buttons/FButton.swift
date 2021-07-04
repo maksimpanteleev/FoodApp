@@ -11,26 +11,25 @@ class FButton: UIButton {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        configure()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(title: String){
-        super.init(frame: .zero)
+    convenience init(title: String){
+        self.init(frame: .zero)
         setTitle(title, for: .normal)
-        configure()
     }
     
     func configure()  {
         translatesAutoresizingMaskIntoConstraints = false
-        
         layer.cornerRadius = 8
         layer.borderWidth = 2
-        layer.borderColor = UIColor.systemGreen.cgColor
+        layer.borderColor = UIColor.white.cgColor
         setTitleColor(.white, for: .normal)
         titleLabel?.font = UIFont.preferredFont(forTextStyle: .headline)
-        backgroundColor = .systemGreen
+        backgroundColor = .systemTeal
     }
 }

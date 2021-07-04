@@ -10,23 +10,61 @@ import Foundation
 struct NetworkManager {
     
     static let shared = NetworkManager()
-    private let urlStr = "https://api.spoonacular.com/recipes/complexSearch?query=pasta&apiKey=a08b1472ffe042e992008c5ade01dcbe"
     
-    func getRecipe() {
-        guard let url = URL(string: urlStr) else {
+    func getRecipe(query: String, completed: @escaping (Result<[Recipe], FError>) -> Void) {
+        guard let url = Endpoint.search(matching: query, searchType: .recipes).url else {
+            completed(.failure(.invalidUrl))
             return
         }
-        URLSession.shared.dataTask(with: url) { data, response, _ in
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else { return }
-            guard let data = data else { return }
-            var recipes = [Recipe]()
-            let result = try? JSONDecoder().decode(Result.self, from: data)
-            recipes = result?.results ?? [Recipe]()
-            print(response)
-            print("-----------------")
-            print(data)
-            print("-----------------")
-            print(recipes)
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completed(.failure(.invalidResponse))
+                return
+            }
+            guard let data = data else {
+                completed(.failure(.invalidData))
+                return
+            }
+            do {
+                let result = try JSONDecoder().decode(SearchResult.self, from: data)
+                let recipes = result.results
+                completed(.success(recipes))
+            } catch {
+                completed(.failure(.invalidData))
+            }
+        }.resume()
+    }
+    
+    func getRecipeInfo(for id: Int, completed: @escaping (Result<RecipeInfo, FError>) -> Void) {
+        guard let url = Endpoint.search(matching: String(id), searchType: .recipeInfo).url else {
+            completed(.failure(.invalidUrl))
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                completed(.failure(.invalidResponse))
+                return
+            }
+            guard let data = data else {
+                completed(.failure(.invalidData))
+                return
+            }
+            do {
+                let recipe = try JSONDecoder().decode(RecipeInfo.self, from: data)
+                completed(.success(recipe))
+            } catch {
+                completed(.failure(.invalidData))
+            }
+        }.resume()
+    }
+    
+    func downloadImage(from urlString: String, completed: @escaping (Data) -> Void) {
+        guard let url = URL(string: urlString) else { print("invalid url"); return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard error == nil, let data = data else { print("invalid data"); return }
+            completed(data)
         }.resume()
     }
 }

@@ -9,15 +9,39 @@ import UIKit
 
 class RecipeTableCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    static let reuseId = "RecipeTableCell"
+    var mealImage = MealImage(frame: .zero)
+    var mealName = FLabel(fontSize: 26, weight: .regular, alignment: .left)
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configure()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
+    private func configure() {
+        addSubviews(mealName, mealImage)
+        accessoryType = .disclosureIndicator
+        let padding: CGFloat = 8
+        
+        NSLayoutConstraint.activate([
+            mealImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            mealImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
+            mealImage.heightAnchor.constraint(equalToConstant: 60),
+            mealImage.widthAnchor.constraint(equalToConstant: 60),
+            
+            mealName.leadingAnchor.constraint(equalTo: mealImage.trailingAnchor, constant: padding),
+            mealName.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            mealName.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
+            mealName.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+    
+    func set(recipe: Recipe) {
+        mealImage.downloadImage(fromURL: recipe.image)
+        mealName.text = recipe.title
+    }
 }

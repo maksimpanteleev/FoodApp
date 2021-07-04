@@ -15,7 +15,6 @@ class ContainerVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("container")
         configureNavigationBar()
         configureOriginalState()
     }
@@ -36,7 +35,13 @@ class ContainerVC: UIViewController {
     }
 
     @objc func signOutButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        AuthenticationManager.updateUsersStatus(login: "", password: "", actionType: .singOut) { error in
+            guard error == nil else {
+                self.presentAlertVC(title: "Error", message: AuthenticationManager.firebaseError ?? "Unexpected error." )
+                return
+            }
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func menuButtonTapped() {
@@ -50,12 +55,20 @@ class ContainerVC: UIViewController {
                        initialSpringVelocity: 0,
                        options: .curveEaseOut) {
             self.fTabBarController.view.frame.origin.x = self.isMenuOpened ? 0 : self.fTabBarController.view.frame.width - 140
+            self.menuVC.view.alpha = !self.isMenuOpened ? 1 : 0
         }
         isMenuOpened.toggle()
+        
     }
 }
 
 extension ContainerVC: MenuVCDelegate {
+    
+    // show user's profile
+    func profileButtonItemTapped() {
+        guard let user = AuthenticationManager.user else { return }
+        print("Username = \(String(describing: user.displayName))\nUserId = \(user.uid)\nUserEmail = \(user.email!)")
+    }
     
     // show Search screen
     func searchButtonItemTapped() {

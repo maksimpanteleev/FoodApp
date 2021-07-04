@@ -9,12 +9,27 @@ import UIKit
 
 class FLabel: UILabel {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
     }
-    */
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+ 
+    convenience init(fontSize: CGFloat, weight: UIFont.Weight, alignment: NSTextAlignment) {
+        self.init(frame: .zero)
+        font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+        textAlignment = alignment
+    }
+    
+    func configure() {
+        translatesAutoresizingMaskIntoConstraints = false
+        adjustsFontForContentSizeCategory = true
+        textColor = .label
+        adjustsFontSizeToFitWidth = true
+        minimumScaleFactor = 0.8
+        lineBreakMode = .byTruncatingTail
+    }
 }
